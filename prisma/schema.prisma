@@ -52,4 +52,28 @@ model Lead {
   createdAt            DateTime @default(now())
 
   openHouseEvent       OpenHouseEvent @relation(fields: [openHouseEventId], references: [id])
+  scheduledMessages    ScheduledMessage[]
+}
+
+model ScheduledMessage {
+  id                   String   @id @default(cuid())
+  leadId               String
+  openHouseEventId     String
+  messageType          String   // 'sms' | 'email'
+  templateType         String   // 'welcome' | 'follow-up-1h' | 'follow-up-24h' | 'similar-properties' | 'market-update'
+  subject              String?  // For emails
+  content              String   // Message content
+  recipientPhone       String?  // For SMS
+  recipientEmail       String?  // For emails
+  sendAt               DateTime // When to send the message
+  status               String   @default("pending") // 'pending' | 'sent' | 'failed'
+  errorMessage         String?  // If failed, store error
+  sentAt               DateTime? // When actually sent
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+
+  lead                 Lead @relation(fields: [leadId], references: [id])
+
+  @@index([sendAt, status])
+  @@index([leadId])
 }
