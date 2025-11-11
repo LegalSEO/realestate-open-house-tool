@@ -1,49 +1,32 @@
-import twilio from 'twilio';
+// MOCKED: Twilio integration disabled for development
+// import twilio from 'twilio';
 
-// Initialize Twilio client
-const accountSid = process.env.TWILIO_ACCOUNT_SID;
-const authToken = process.env.TWILIO_AUTH_TOKEN;
-const fromNumber = process.env.TWILIO_PHONE_NUMBER;
-
-let twilioClient: ReturnType<typeof twilio> | null = null;
-
-function getTwilioClient() {
-  if (!accountSid || !authToken || !fromNumber) {
-    throw new Error('Twilio credentials not configured. Please set TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, and TWILIO_PHONE_NUMBER environment variables.');
-  }
-
-  if (!twilioClient) {
-    twilioClient = twilio(accountSid, authToken);
-  }
-
-  return twilioClient;
-}
+// Initialize Twilio client (MOCKED)
+const fromNumber = process.env.TWILIO_PHONE_NUMBER || '+1234567890';
 
 /**
- * Send an SMS message via Twilio
+ * Send an SMS message via Twilio (MOCKED - logs to console only)
  * @param to - Recipient phone number (E.164 format recommended, e.g., +1234567890)
  * @param message - Message content (keep under 160 characters for single segment)
- * @returns Message SID if successful
+ * @returns Mock Message SID
  */
 export async function sendSMS(to: string, message: string): Promise<string> {
-  try {
-    const client = getTwilioClient();
+  // Ensure phone number starts with +
+  const formattedTo = to.startsWith('+') ? to : `+1${to.replace(/\D/g, '')}`;
 
-    // Ensure phone number starts with +
-    const formattedTo = to.startsWith('+') ? to : `+1${to.replace(/\D/g, '')}`;
+  // Mock SID for development
+  const mockSid = `SM${Math.random().toString(36).substring(2, 15)}`;
 
-    const result = await client.messages.create({
-      body: message,
-      from: fromNumber,
-      to: formattedTo,
-    });
+  console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+  console.log('📱 MOCK SMS SENT');
+  console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+  console.log(`From: ${fromNumber}`);
+  console.log(`To: ${formattedTo}`);
+  console.log(`Message: ${message}`);
+  console.log(`SID: ${mockSid}`);
+  console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n');
 
-    console.log(`SMS sent successfully to ${formattedTo}. SID: ${result.sid}`);
-    return result.sid;
-  } catch (error) {
-    console.error('Failed to send SMS:', error);
-    throw error;
-  }
+  return mockSid;
 }
 
 /**

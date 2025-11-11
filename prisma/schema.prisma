@@ -29,6 +29,7 @@ model OpenHouseEvent {
   propertyFeatures     String   // JSON array of features
   latitude             Float?
   longitude            Float?
+  eventDate            DateTime // Date and time of the open house event
   isActive             Boolean  @default(true)
   createdAt            DateTime @default(now())
   updatedAt            DateTime @updatedAt

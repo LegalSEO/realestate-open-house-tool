@@ -1,27 +1,13 @@
-import { Resend } from 'resend';
+// MOCKED: Resend integration disabled for development
+// import { Resend } from 'resend';
 import { render } from '@react-email/components';
 import WelcomeEmail from '@/emails/WelcomeEmail';
 import FollowUpEmail from '@/emails/FollowUpEmail';
 import SimilarPropertiesEmail from '@/emails/SimilarPropertiesEmail';
 import MarketUpdateEmail from '@/emails/MarketUpdateEmail';
 
-// Initialize Resend client
-const resendApiKey = process.env.RESEND_API_KEY;
+// Initialize Resend client (MOCKED)
 const fromEmail = process.env.EMAIL_FROM || 'noreply@example.com';
-
-let resendClient: Resend | null = null;
-
-function getResendClient() {
-  if (!resendApiKey) {
-    throw new Error('Resend API key not configured. Please set RESEND_API_KEY environment variable.');
-  }
-
-  if (!resendClient) {
-    resendClient = new Resend(resendApiKey);
-  }
-
-  return resendClient;
-}
 
 export type EmailTemplateType = 'welcome' | 'follow-up-1h' | 'follow-up-24h' | 'similar-properties' | 'market-update';
 
@@ -101,33 +87,27 @@ function renderEmailTemplate(
 }
 
 /**
- * Send an email via Resend
+ * Send an email via Resend (MOCKED - logs to console only)
  * @param to - Recipient email address
  * @param subject - Email subject
  * @param html - HTML content
- * @returns Email ID if successful
+ * @returns Mock Email ID
  */
 export async function sendEmail(to: string, subject: string, html: string): Promise<string> {
-  try {
-    const client = getResendClient();
+  // Mock email ID for development
+  const mockEmailId = `email_${Math.random().toString(36).substring(2, 15)}`;
 
-    const result = await client.emails.send({
-      from: fromEmail,
-      to,
-      subject,
-      html,
-    });
+  console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+  console.log('📧 MOCK EMAIL SENT');
+  console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+  console.log(`From: ${fromEmail}`);
+  console.log(`To: ${to}`);
+  console.log(`Subject: ${subject}`);
+  console.log(`HTML Length: ${html.length} characters`);
+  console.log(`Email ID: ${mockEmailId}`);
+  console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n');
 
-    if (result.error) {
-      throw new Error(result.error.message);
-    }
-
-    console.log(`Email sent successfully to ${to}. ID: ${result.data?.id}`);
-    return result.data?.id || 'unknown';
-  } catch (error) {
-    console.error('Failed to send email:', error);
-    throw error;
-  }
+  return mockEmailId;
 }
 
 /**
