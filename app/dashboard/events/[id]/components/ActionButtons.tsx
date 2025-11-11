@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { BroadcastModal } from './BroadcastModal';
 import QRCode from 'qrcode';
+import { generateQRCodeWithLabel } from '@/lib/qr-code';
 
 interface Lead {
   id: string;
@@ -95,15 +96,12 @@ export function ActionButtons({ event, leads, showToast }: ActionButtonsProps) {
 
   const handleDownloadQR = async () => {
     try {
-      // Generate QR code as data URL
-      const qrDataUrl = await QRCode.toDataURL(signInUrl, {
-        width: 1000,
-        margin: 2,
-        color: {
-          dark: '#000000',
-          light: '#FFFFFF',
-        },
-      });
+      // Generate QR code with property address label
+      const qrDataUrl = await generateQRCodeWithLabel(
+        signInUrl,
+        event.propertyAddress,
+        1000
+      );
 
       // Create download link
       const link = document.createElement('a');
@@ -115,7 +113,37 @@ export function ActionButtons({ event, leads, showToast }: ActionButtonsProps) {
 
       showToast('QR code downloaded!', 'success');
     } catch (error) {
+      console.error('Error downloading QR code:', error);
       showToast('Failed to download QR code', 'error');
+    }
+  };
+
+  const handlePrintSignInSheet = async () => {
+    try {
+      // Fetch PDF from API
+      const response = await fetch(`/api/events/${event.id}/pdf`);
+
+      if (!response.ok) {
+        throw new Error('Failed to generate PDF');
+      }
+
+      // Get the PDF blob
+      const blob = await response.blob();
+
+      // Create download link
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `sign-in-sheet-${event.shortCode}.pdf`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+
+      showToast('Sign-in sheet downloaded!', 'success');
+    } catch (error) {
+      console.error('Error downloading sign-in sheet:', error);
+      showToast('Failed to download sign-in sheet', 'error');
     }
   };
 
@@ -202,6 +230,26 @@ export function ActionButtons({ event, leads, showToast }: ActionButtonsProps) {
             />
           </svg>
           Download QR Code
+        </button>
+
+        <button
+          onClick={handlePrintSignInSheet}
+          className="inline-flex items-center px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
+        >
+          <svg
+            className="w-5 h-5 mr-2"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"
+            />
+          </svg>
+          Print Sign-In Sheet
         </button>
       </div>
 
