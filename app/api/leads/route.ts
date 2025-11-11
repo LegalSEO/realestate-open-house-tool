@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server"
 import { prisma } from "@/lib/prisma"
 import { calculateLeadScore } from "@/lib/lead-scoring"
+import { sendWelcomeMessages, scheduleFollowUpSequence } from "@/lib/messaging"
 
 export async function POST(request: NextRequest) {
   try {
@@ -41,10 +42,19 @@ export async function POST(request: NextRequest) {
       },
     })
 
-    // TODO: In the next prompt, we'll implement:
-    // - Instant SMS notification to agent
-    // - Email notification to agent
-    // - Email confirmation to lead
+    // Send immediate welcome messages (SMS + Email)
+    // This is done in a non-blocking way so it doesn't delay the response
+    sendWelcomeMessages(lead.id, eventId).catch((error) => {
+      console.error("Failed to send welcome messages:", error)
+      // Don't throw - we don't want to fail the lead creation
+    })
+
+    // Schedule follow-up messages
+    // 1 hour, 24 hours, 3 days, and 7 days later
+    scheduleFollowUpSequence(lead.id, eventId).catch((error) => {
+      console.error("Failed to schedule follow-up messages:", error)
+      // Don't throw - we don't want to fail the lead creation
+    })
 
     return NextResponse.json({ success: true, lead }, { status: 201 })
   } catch (error) {
