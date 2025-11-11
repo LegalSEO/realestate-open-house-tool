@@ -1,0 +1,55 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model OpenHouseEvent {
+  id                   String   @id @default(cuid())
+  shortCode            String   @unique
+  propertyAddress      String
+  propertyPhotos       String   // JSON array of photo URLs
+  price                Int
+  bedrooms             Int
+  bathrooms            Float
+  squareFeet           Int
+  welcomeMessage       String
+  agentName            String
+  agentPhoto           String
+  agentBrokerage       String
+  agentEmail           String
+  agentPhone           String
+  propertyDescription  String
+  propertyFeatures     String   // JSON array of features
+  latitude             Float?
+  longitude            Float?
+  isActive             Boolean  @default(true)
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+
+  leads                Lead[]
+}
+
+model Lead {
+  id                   String   @id @default(cuid())
+  openHouseEventId     String
+  firstName            String
+  lastName             String
+  email                String
+  phone                String
+  preApproved          String   // 'yes' | 'no' | 'not-sure'
+  hasAgent             Boolean
+  timeline             String   // '0-30 days' | '1-3 months' | '3-6 months' | '6+ months'
+  interestedIn         String   // 'buying' | 'just-looking' | 'investment'
+  score                String   // 'HOT' | 'WARM' | 'COLD'
+  notes                String?
+  createdAt            DateTime @default(now())
+
+  openHouseEvent       OpenHouseEvent @relation(fields: [openHouseEventId], references: [id])
+}
