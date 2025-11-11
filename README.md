@@ -5,9 +5,13 @@ A modern, mobile-optimized web application for capturing leads at real estate op
 ## Features
 
 - **Public Sign-In Page**: Visitors scan a QR code to access event-specific pages
+- **QR Code Generation**: High-resolution (1000x1000px) QR codes with property address labels
+- **Printable Sign-In Sheets**: Professional PDF sign-in sheets with QR codes, ready to print
 - **Property Showcase**: Beautiful photo carousel, key stats, and property details
 - **Smart Lead Capture**: Mobile-friendly form with auto-formatting phone numbers
 - **Lead Scoring**: Automatic HOT/WARM/COLD scoring based on visitor responses
+- **Agent Dashboard**: Real-time lead monitoring with broadcast messaging and CSV export
+- **Automated Messaging**: SMS and email sequences for lead nurturing
 - **Property Details**: Full property information with photos, features, and map
 - **Agent Contact**: Easy contact options for interested buyers
 
@@ -101,13 +105,19 @@ Leads are automatically scored based on three criteria:
 - Fast-loading image carousel
 - Optimized for sign-in within 30 seconds
 
+## Documentation
+
+- **[Agent Dashboard Guide](./DASHBOARD_README.md)**: Comprehensive guide to the agent dashboard features
+- **[QR Code Features](./QR_CODE_README.md)**: Complete guide to QR code generation and sign-in sheets
+- **[Messaging Setup](./MESSAGING_SETUP.md)**: Instructions for setting up SMS and email messaging
+
 ## Next Steps (Future Enhancements)
 
-- SMS/Email notifications to agents on lead submission
-- Lead dashboard for agents
-- QR code generator
-- Analytics and reporting
-- CRM integration
+- Real-time WebSocket updates (currently uses polling)
+- Production messaging integration (Twilio/Resend)
+- Analytics and reporting dashboard
+- CRM integration (Salesforce, HubSpot)
+- Multi-agent support and team features
 
 ## License
 

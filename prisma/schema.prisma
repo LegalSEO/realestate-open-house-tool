@@ -13,6 +13,7 @@ datasource db {
 model OpenHouseEvent {
   id                   String   @id @default(cuid())
   shortCode            String   @unique
+  qrCodeUrl            String?  // URL to stored QR code image
   propertyAddress      String
   propertyPhotos       String   // JSON array of photo URLs
   price                Int
