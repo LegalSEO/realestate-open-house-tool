@@ -1,7 +1,10 @@
 import { formatDistance } from 'date-fns';
+import Link from 'next/link';
+import { Smartphone } from 'lucide-react';
 
 interface EventHeaderProps {
   event: {
+    id: string;
     propertyAddress: string;
     eventDate: string;
   };
@@ -70,12 +73,21 @@ export function EventHeader({ event, status, eventDate }: EventHeaderProps) {
             </p>
           )}
         </div>
-        <button
-          className="px-4 py-2 bg-white border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors"
-          onClick={() => alert('Edit functionality coming soon!')}
-        >
-          Edit Event
-        </button>
+        <div className="flex gap-2">
+          <Link
+            href={`/dashboard/events/${event.id}/mobile`}
+            className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+          >
+            <Smartphone className="w-4 h-4" />
+            <span>Mobile View</span>
+          </Link>
+          <button
+            className="px-4 py-2 bg-white border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors"
+            onClick={() => alert('Edit functionality coming soon!')}
+          >
+            Edit Event
+          </button>
+        </div>
       </div>
     </div>
   );

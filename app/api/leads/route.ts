@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server"
 import { prisma } from "@/lib/prisma"
 import { calculateLeadScore } from "@/lib/lead-scoring"
 import { sendWelcomeMessages, scheduleFollowUpSequence } from "@/lib/messaging"
+import { triggerNewLead } from "@/lib/pusher-server"
 
 export async function POST(request: NextRequest) {
   try {
@@ -40,6 +41,12 @@ export async function POST(request: NextRequest) {
         interestedIn,
         score,
       },
+    })
+
+    // Trigger real-time notification via Pusher
+    triggerNewLead(eventId, lead).catch((error) => {
+      console.error("Failed to trigger real-time notification:", error)
+      // Don't throw - we don't want to fail the lead creation
     })
 
     // Send immediate welcome messages (SMS + Email)
